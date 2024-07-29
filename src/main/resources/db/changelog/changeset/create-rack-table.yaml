@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-rack
+      author: Artur
+      changes:
+        - createTable:
+            tableName: rack
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: location
+                  type: text

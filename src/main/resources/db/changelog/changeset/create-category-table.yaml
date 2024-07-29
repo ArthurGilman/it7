@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-category
+      author: Artur
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false

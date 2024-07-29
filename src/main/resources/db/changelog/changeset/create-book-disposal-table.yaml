@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book_disposal
+      author: Artur
+      changes:
+        - createTable:
+            tableName: book_disposal
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: copy_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: disposal_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reason
+                  type: text
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: book_disposal
+            baseColumnNames: copy_id
+            referencedTableName: book_copy
+            referencedColumnNames: id
+            constraintName: fk_book_disposal_copy_id

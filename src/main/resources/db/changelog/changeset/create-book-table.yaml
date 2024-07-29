@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book
+      author: Artur
+      changes:
+        - createTable:
+            tableName: book
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: varchar(13)
+                  constraints:
+                    nullable: false

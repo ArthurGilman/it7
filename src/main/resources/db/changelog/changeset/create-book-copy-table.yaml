@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book_copy
+      author: Artur
+      changes:
+        - createTable:
+            tableName: book_copy
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shelf_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    checkConstraint: status IN ('в библиотеке', 'выдана', 'списана')
+        - addForeignKeyConstraint:
+            baseTableName: book_copy
+            baseColumnNames: book_id
+            referencedTableName: book
+            referencedColumnNames: id
+            constraintName: fk_book_copy_book_id
+        - addForeignKeyConstraint:
+            baseTableName: book_copy
+            baseColumnNames: shelf_id
+            referencedTableName: shelf
+            referencedColumnNames: id
+            constraintName: fk_book_copy_shelf_id

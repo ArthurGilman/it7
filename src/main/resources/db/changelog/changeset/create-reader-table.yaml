@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-reader
+      author: Artur
+      changes:
+        - createTable:
+            tableName: reader
+            columns:
+              - column:
+                  name: id
+                  type: big serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticket_number
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    unique: true
