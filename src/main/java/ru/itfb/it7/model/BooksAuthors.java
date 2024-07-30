@@ -1,17 +1,15 @@
 package ru.itfb.it7.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table("books_authors")
 public class BooksAuthors {
-    private Integer bookId;
-    private Integer authorId;
+    private Long bookId;
+    private Long authorId;
 }

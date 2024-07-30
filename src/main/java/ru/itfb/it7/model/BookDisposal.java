@@ -1,9 +1,6 @@
 package ru.itfb.it7.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,12 +10,13 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table("book_disposal")
 public class BookDisposal {
     @Id
     private Long id;
-    private Integer copyId;
-    private Integer ticketId;
+    private Long copyId;
+    private Long ticketId;
     private LocalDate lendDate;
     private LocalDate dueDate;
     private LocalDate returnDate;

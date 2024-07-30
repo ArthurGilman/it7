@@ -1,9 +1,6 @@
 package ru.itfb.it7.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -11,11 +8,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table("book_copy")
 public class BookCopy {
     @Id
     private Long id;
-    private Integer bookId;
-    private Integer shelfId;
+    private Long bookId;
+    private Long shelfId;
     private String status;
 }
