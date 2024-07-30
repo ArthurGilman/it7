@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-reader_ticket
+      author: Artur
+      changes:
+        - createTable:
+            tableName: reader_ticket
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: reader_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: issue_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiry_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    checkConstraint: status IN ('активен', 'заблокирован')
+        - addForeignKeyConstraint:
+            baseTableName: reader_ticket
+            baseColumnNames: reader_id
+            referencedTableName: reader
+            referencedColumnNames: id
+            constraintName: fk_reader_ticket_reader_id

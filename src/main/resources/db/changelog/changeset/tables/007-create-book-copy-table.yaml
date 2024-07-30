@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-book_copy
+      id: create-book-copy
       author: Artur
       changes:
         - createTable:
@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: big serial
+                  type: bigserial
                   autoIncrement: true
                   constraints:
                     primaryKey: true
