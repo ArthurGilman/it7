@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-reader
+      id: create-book_disposal
       author: Artur
       changes:
         - createTable:
-            tableName: reader
+            tableName: book_disposal
             columns:
               - column:
                   name: id
@@ -14,24 +14,23 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: first_name
-                  type: text
+                  name: copy_id
+                  type: integer
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: text
-                  constraints:
-                    nullable: false
-              - column:
-                  name: ticket_number
-                  type: varchar
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: birth_date
+                  name: disposal_date
                   type: date
                   constraints:
                     nullable: false
-
+              - column:
+                  name: reason
+                  type: text
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: book_disposal
+            baseColumnNames: copy_id
+            referencedTableName: book_copy
+            referencedColumnNames: id
+            constraintName: fk_book_disposal_copy_id

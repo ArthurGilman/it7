@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book_lending
+      author: Artur
+      changes:
+        - createTable:
+            tableName: book_lending
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: copy_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticket_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lend_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: due_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: return_date
+                  type: date
+        - addForeignKeyConstraint:
+            baseTableName: book_lending
+            baseColumnNames: copy_id
+            referencedTableName: book_copy
+            referencedColumnNames: id
+            constraintName: fk_book_loan_copy_id
+        - addForeignKeyConstraint:
+            baseTableName: book_lending
+            baseColumnNames: ticket_id
+            referencedTableName: reader_ticket
+            referencedColumnNames: id
+            constraintName: fk_book_loan_ticket_id

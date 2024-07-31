@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-reader
+      id: create-reader_ticket
       author: Artur
       changes:
         - createTable:
-            tableName: reader
+            tableName: reader_ticket
             columns:
               - column:
                   name: id
@@ -14,24 +14,29 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: first_name
-                  type: text
+                  name: reader_id
+                  type: integer
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: text
-                  constraints:
-                    nullable: false
-              - column:
-                  name: ticket_number
-                  type: varchar
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: birth_date
+                  name: issue_date
                   type: date
                   constraints:
                     nullable: false
-
+              - column:
+                  name: expiry_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    checkConstraint: status IN ('активен', 'заблокирован')
+        - addForeignKeyConstraint:
+            baseTableName: reader_ticket
+            baseColumnNames: reader_id
+            referencedTableName: reader
+            referencedColumnNames: id
+            constraintName: fk_reader_ticket_reader_id

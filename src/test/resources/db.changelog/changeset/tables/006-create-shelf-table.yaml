@@ -1,0 +1,32 @@
+databaseChangeLog:
+- changeSet:
+    id: create-shelf
+    author: Artur
+    changes:
+      - createTable:
+          tableName: shelf
+          columns:
+            - column:
+                name: id
+                type: bigserial
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: position
+                type: varchar(8)
+            - column:
+                name: rack_id
+                type: integer
+                constraints:
+                  nullable: false
+            - column:
+                name: capacity
+                type: integer
+      - addForeignKeyConstraint:
+          baseTableName: shelf
+          baseColumnNames: rack_id
+          referencedTableName: rack
+          referencedColumnNames: id
+          constraintName: fk_shelf_rack_id

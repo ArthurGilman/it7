@@ -29,9 +29,3 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
-              - column:
-                  name: birth_date
-                  type: date
-                  constraints:
-                    nullable: false
-

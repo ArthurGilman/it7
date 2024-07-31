@@ -1,6 +1,7 @@
 package ru.itfb.it7.model;
 
 import lombok.*;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
@@ -10,6 +11,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @Table("books_categories")
 public class BooksCategories {
-    private Long bookId;
+    @Column("category_id")
     private Long categoryId;
 }

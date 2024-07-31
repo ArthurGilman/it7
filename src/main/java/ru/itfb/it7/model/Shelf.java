@@ -16,7 +16,6 @@ public class Shelf {
     @Id
     private Long id;
     private String position;
-    @Column("rack_id")
-    private Long rackId;
+    @Column("capacity")
     private Integer capacity;
 }
