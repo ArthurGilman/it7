@@ -13,6 +13,9 @@ import ru.itfb.it7.projections.ReaderProjection;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SpringBootApplication
@@ -31,42 +34,32 @@ public class It7Application {
 						   RackRepository rackRepository, ReaderRepository readerRepository) {
 		return args -> {
 			readerRepository.deleteAll();
-			ReaderTicket ticket = ReaderTicket.builder()
-					.issueDate(LocalDate.now())
-					.expiryDate(LocalDate.now().plusDays(30))
-					.status("fine")
-					.build();
-			Reader reader = Reader.builder()
-					.firstName("first")
-					.lastName("last")
-					.readerTicket(ticket)
-					.ticketNumber("#2346")
-					.birthDate(LocalDate.of(1999, Month.JULY, 25))
-					.build();
-			readerRepository.save(reader);
-			ReaderProjection projection = readerRepository.findReaderByFirstNameAndLastNameAndBirthDate(
-					reader.getFirstName(),
-					reader.getLastName(),
-					reader.getBirthDate());
-			System.out.println();
-			readerRepository.deleteAll();
+			Shelf shelf = Shelf.builder().capacity(10).position("middle").build();
+			Rack rack = Rack.builder().location("location1").shelves(Set.of(shelf)).build();
+			rackRepository.save(rack);
 //			readerRepository.deleteAll();
-//			Book book = Book.builder()
-//					.isbn("2134")
-//					.title("title")
-//					.authors(new HashSet<>())
-//					.bookCopies(new HashSet<>())
-//					.categories(new HashSet<>())
-//					.build();
-////			Author author = Author.builder()
-////					.firstName("name")
-////					.lastName("lastName")
-////					.build();
-////			authorRepository.save(author);
-////			book.addAuthor(author);
-//			Shelf shelf = Shelf.builder().capacity(10).position("middle").build();
-//			Rack rack = Rack.builder().location("location1").shelves(Set.of(shelf)).build();
-//			rackRepository.save(rack);
+			Book book = Book.builder()
+					.isbn("2134")
+					.title("title")
+					.authors(new HashSet<>())
+					.bookCopies(new ArrayList<>())
+					.categories(new HashSet<>())
+					.build();
+			book.getBookCopies().add(BookCopy.builder()
+					.shelfId(1L)
+					.status("good")
+					.build());
+			Author author = Author.builder()
+					.firstName("name")
+					.lastName("lastName")
+					.build();
+			authorRepository.save(author);
+			book.addAuthor(author);
+			bookRepository.save(book);
+			Book b = bookRepository.findBookByBookLendingCopyId(3L).orElse(null);
+			System.out.println(b);
+
+
 //			BookCopy bookCopy1 = BookCopy.builder().shelfId(shelf.getId()).status("fine").build();
 //			BookCopy bookCopy2 = BookCopy.builder().shelfId(shelf.getId()).status("normal").build();
 //			book.addBookCopy(bookCopy1);

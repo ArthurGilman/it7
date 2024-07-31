@@ -36,6 +36,8 @@ databaseChangeLog:
               - column:
                   name: return_date
                   type: date
+                  constraints:
+                    nullable: true
         - addForeignKeyConstraint:
             baseTableName: book_lending
             baseColumnNames: copy_id

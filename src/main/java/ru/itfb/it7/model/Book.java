@@ -7,7 +7,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,7 +31,7 @@ public class Book {
     @MappedCollection(idColumn = "book_id")
     Set<BooksCategories> categories = new HashSet<>();
     @MappedCollection(idColumn = "book_id")
-    Set<BookCopy> bookCopies = new HashSet<>();
+    List<BookCopy> bookCopies = new ArrayList<>();
 
     public void addAuthor(@NotNull Author author) {
         authors.add(new BooksAuthors(author.getId()));
@@ -43,5 +45,13 @@ public class Book {
     }
     public void deleteBookCopy(@NotNull BookCopy bookCopy) {
         bookCopies.remove(bookCopy);
+    }
+
+    public void deleteCategory(@NotNull Category category) {
+        categories.remove(new BooksCategories(category.getId()));
+    }
+
+    public void deleteAuthor(@NotNull Author author) {
+        authors.remove(new BooksAuthors(author.getId()));
     }
 }

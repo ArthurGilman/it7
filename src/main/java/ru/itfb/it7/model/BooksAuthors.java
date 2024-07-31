@@ -9,7 +9,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table("books_authors")
+@ToString
+@Table(name = "books_authors", schema = "library")
 public class BooksAuthors {
     @Column("author_id")
     private Long authorId;

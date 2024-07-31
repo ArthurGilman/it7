@@ -3,7 +3,10 @@ spring:
     name: it7
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    hikari:
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+      maximum-pool-size: 10
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=library
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 12345
