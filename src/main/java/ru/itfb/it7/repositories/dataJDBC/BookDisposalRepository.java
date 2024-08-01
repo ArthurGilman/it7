@@ -1,4 +1,4 @@
-package ru.itfb.it7.repositories;
+package ru.itfb.it7.repositories.dataJDBC;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

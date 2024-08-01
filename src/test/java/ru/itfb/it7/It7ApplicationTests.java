@@ -1,21 +1,18 @@
 package ru.itfb.it7;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.itfb.it7.model.Author;
 import ru.itfb.it7.model.Book;
-import ru.itfb.it7.repositories.BookRepository;
+import ru.itfb.it7.repositories.dataJDBC.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @DataJdbcTest

@@ -5,14 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import ru.itfb.it7.model.*;
-import ru.itfb.it7.repositories.AuthorRepository;
-import ru.itfb.it7.repositories.BookRepository;
-import ru.itfb.it7.repositories.RackRepository;
-import ru.itfb.it7.repositories.ReaderRepository;
-import ru.itfb.it7.projections.ReaderProjection;
+import ru.itfb.it7.repositories.dataJDBC.AuthorRepository;
+import ru.itfb.it7.repositories.dataJDBC.BookRepository;
+import ru.itfb.it7.repositories.dataJDBC.RackRepository;
+import ru.itfb.it7.repositories.dataJDBC.ReaderRepository;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
