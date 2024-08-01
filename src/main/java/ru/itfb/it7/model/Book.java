@@ -16,6 +16,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
 @ToString
 @Table("book")
@@ -27,11 +28,11 @@ public class Book {
     @Column("isbn")
     private String isbn;
     @MappedCollection(idColumn = "book_id")
-    Set<BooksAuthors> authors = new HashSet<>();
+    private Set<BooksAuthors> authors = new HashSet<>();
     @MappedCollection(idColumn = "book_id")
-    Set<BooksCategories> categories = new HashSet<>();
+    private Set<BooksCategories> categories = new HashSet<>();
     @MappedCollection(idColumn = "book_id")
-    List<BookCopy> bookCopies = new ArrayList<>();
+    private List<BookCopy> bookCopies = new ArrayList<>();
 
     public void addAuthor(@NotNull Author author) {
         authors.add(new BooksAuthors(author.getId()));

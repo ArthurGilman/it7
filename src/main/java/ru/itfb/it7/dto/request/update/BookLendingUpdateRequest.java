@@ -1,11 +1,17 @@
 package ru.itfb.it7.dto.request.update;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
+@ToString
 public class BookLendingUpdateRequest {
     private Long id;
     private Long copyId;

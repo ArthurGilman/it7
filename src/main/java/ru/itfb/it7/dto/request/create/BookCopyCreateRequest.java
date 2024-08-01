@@ -1,9 +1,15 @@
 package ru.itfb.it7.dto.request.create;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.relational.core.mapping.Column;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
+@ToString
 public class BookCopyCreateRequest {
     private Long bookId;
     private Long shelfId;

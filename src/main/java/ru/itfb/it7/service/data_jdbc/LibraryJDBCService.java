@@ -5,10 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itfb.it7.dto.request.ReaderRequest;
-import ru.itfb.it7.dto.request.create.BookCopyCreateRequest;
-import ru.itfb.it7.dto.request.create.BookDisposalRequest;
-import ru.itfb.it7.dto.request.create.BookLendingCreateRequest;
-import ru.itfb.it7.dto.request.create.ReaderCreateRequest;
+import ru.itfb.it7.dto.request.create.*;
 import ru.itfb.it7.dto.request.update.BookLendingUpdateRequest;
 import ru.itfb.it7.dto.request.update.ReaderUpdateRequest;
 import ru.itfb.it7.exception.BookAlreadyWrittenOff;
@@ -22,6 +19,7 @@ import ru.itfb.it7.repositories.dataJDBC.BookRepository;
 import ru.itfb.it7.repositories.dataJDBC.ReaderRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -177,17 +175,39 @@ public class LibraryJDBCService {
     }
 
     /**
+     * Создание новых "справочных" записей: автор/книга/стеллаж(со всеми полками)
+     * Заведение новых книг
+     */
+    public Iterable<Book> createBook(List<BookCreateRequest> request) {
+        List<Book> allBooks = new ArrayList<>();
+        for (BookCreateRequest req : request) {
+            Book b = Book.builder()
+                    .title(req.getTitle())
+                    .isbn(req.getIsbn())
+                    .categories(req.getCategories())
+                    .authors(req.getAuthors())
+                    .build();
+            allBooks.add(b);
+        }
+        return bookRepository.saveAll(allBooks);
+    }
+
+    /**
+     * TODO: заведение новых стеллажей
+     */
+
+    /**
      * создание нового экземляра книги
      * @return
      */
-    public void createBookCopy(BookCopyCreateRequest request) throws BookNotExist {
+    public Book createBookCopy(BookCopyCreateRequest request) throws BookNotExist {
         Book b = bookRepository.findById(request.getBookId()).orElseThrow(() -> new BookNotExist("Такой книги не существует"));
         BookCopy copy = BookCopy.builder()
                 .shelfId(request.getShelfId())
                 .status(request.getStatus())
                 .build();
         b.getBookCopies().add(copy);
-        bookRepository.save(b);
+        return bookRepository.save(b);
     }
 
 
