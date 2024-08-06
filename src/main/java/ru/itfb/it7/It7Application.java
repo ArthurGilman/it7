@@ -30,31 +30,32 @@ public class It7Application {
 						   AuthorRepository authorRepository,
 						   RackRepository rackRepository, ReaderRepository readerRepository) {
 		return args -> {
-			readerRepository.deleteAll();
-			Shelf shelf = Shelf.builder().capacity(10).position("middle").build();
-			Rack rack = Rack.builder().location("location1").shelves(Set.of(shelf)).build();
-			rackRepository.save(rack);
-//			readerRepository.deleteAll();
-			Book book = Book.builder()
-					.isbn("2134")
-					.title("title")
-					.authors(new HashSet<>())
-					.bookCopies(new ArrayList<>())
-					.categories(new HashSet<>())
-					.build();
-			book.getBookCopies().add(BookCopy.builder()
-					.shelfId(1L)
-					.status("good")
-					.build());
-			Author author = Author.builder()
-					.firstName("name")
-					.lastName("lastName")
-					.build();
-			authorRepository.save(author);
-			book.addAuthor(author);
-			bookRepository.save(book);
-			Book b = bookRepository.findBookByBookLendingCopyId(3L).orElse(null);
+			Book b = bookRepository.findBookByBookLendingCopyId(4L).orElse(null);
 			System.out.println(b);
+//			Shelf shelf = Shelf.builder().capacity(10).position("middle").build();
+//			Rack rack = Rack.builder().location("location1").shelves(Set.of(shelf)).build();
+//			rackRepository.save(rack);
+////			readerRepository.deleteAll();
+//			Book book = Book.builder()
+//					.isbn("2134")
+//					.title("title")
+//					.authors(new HashSet<>())
+//					.bookCopies(new HashSet<>())
+//					.categories(new HashSet<>())
+//					.build();
+//			book.getBookCopies().add(BookCopy.builder()
+//					.shelfId(10L)
+//					.status("good")
+//					.build());
+//			Author author = Author.builder()
+//					.firstName("name")
+//					.lastName("lastName")
+//					.build();
+//			authorRepository.save(author);
+//			book.addAuthor(author);
+//			bookRepository.save(book);
+//			Book b = bookRepository.findBookByBookLendingCopyId(5L).orElse(null);
+//			System.out.println(b);
 
 
 //			BookCopy bookCopy1 = BookCopy.builder().shelfId(shelf.getId()).status("fine").build();

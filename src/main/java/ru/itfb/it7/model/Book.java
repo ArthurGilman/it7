@@ -31,8 +31,8 @@ public class Book {
     private Set<BooksAuthors> authors = new HashSet<>();
     @MappedCollection(idColumn = "book_id")
     private Set<BooksCategories> categories = new HashSet<>();
-    @MappedCollection(idColumn = "book_id")
-    private List<BookCopy> bookCopies = new ArrayList<>();
+    @MappedCollection(idColumn = "book_id", keyColumn = "book_id")
+    private Set<BookCopy> bookCopies = new HashSet<>();
 
     public void addAuthor(@NotNull Author author) {
         authors.add(new BooksAuthors(author.getId()));

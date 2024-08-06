@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.itfb.it7.dto.request.ReaderRequest;
 import ru.itfb.it7.dto.request.create.*;
+import ru.itfb.it7.dto.request.update.BookCopyUpdateRequest;
 import ru.itfb.it7.dto.request.update.BookLendingUpdateRequest;
 import ru.itfb.it7.dto.request.update.ReaderUpdateRequest;
 import ru.itfb.it7.exception.BookAlreadyWrittenOff;
@@ -22,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -32,6 +35,7 @@ public class LibraryJDBCService {
     private final BookRepository bookRepository;
     private final BookLendingRepository bookLendingRepository;
     private final LibraryJDBCTemplateRepository templateRepository;
+    private final TransactionTemplate transactionTemplate;
 
     /**
      * Поиск читателя и его активного читательского билета по ФИО и ДР (истекшие не должны возвращаться)
@@ -209,7 +213,41 @@ public class LibraryJDBCService {
         b.getBookCopies().add(copy);
         return bookRepository.save(b);
     }
+    /**
+     * TODO: пакетное создание нескольких экземляров одной и той же книги
+     */
+
+    public Book createBookCopies(List<BookCopyCreateRequest> request) {
+        Book b = bookRepository.findById(request.get(0).getBookId())
+                .orElseThrow(() -> new BookNotExist("Такой книги не существует"));
+        Set<BookCopy> copies = b.getBookCopies();
+        for (BookCopyCreateRequest req : request) {
+            if (!req.getBookId().equals(b.getId())) {
+                throw new UnsupportedOperationException("Запрещенено пакетное создание экземялров для разных книг")
+            }
+            BookCopy copy = BookCopy.builder()
+                    .shelfId(req.getShelfId())
+                    .status(req.getStatus())
+                    .build();
+            copies.add(copy);
+        }
+        return bookRepository.save(b);
+    }
 
 
+    /**
+     * TODO: обновление экземляра книги
+     */
+    public BookCopy updateBookCopy(BookCopyUpdateRequest request) {
+        Book b = bookRepository.findById(request.getBookId())
+                .orElseThrow(() -> new BookNotExist("Книги, к которой относится экземпляр книги нет, в базе данных"));
 
+        BookCopy bookCopy = b.getBookCopies().stream()
+                .filter(c -> c.getId().equals(request.getId()))
+                .findFirst()
+                .orElseThrow(() -> new BookNotExist("Экзмепляра с id " + request.getId() + " нет в базе данных"));
+        bookCopy.setShelfId(request.getShelfId());
+        bookCopy.setStatus(request.getStatus());
+        return bookCopy;
+    }
 }

@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface BookRepository extends CrudRepository<Book, Long> {
 
     @Lock(LockMode.PESSIMISTIC_WRITE)
-    @Query("select b.id, b.title, b.isbn from book b join book_copy bc on b.id = bc.id where b.id = :copyId")
+    @Query("select b.id, b.title, b.isbn from book b join book_copy bc on b.id = bc.book_id where bc.id = :copyId")
     Optional<Book> findBookByBookLendingCopyId(Long copyId);
 }
