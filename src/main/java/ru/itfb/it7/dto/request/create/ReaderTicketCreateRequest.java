@@ -1,4 +1,5 @@
-package ru.itfb.it7.dto.request.update;
+package ru.itfb.it7.dto.request.create;
+
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @Builder
 @ToString
-public class ReaderUpdateRequest {
+public class ReaderTicketCreateRequest {
     @NotNull
     private Long id;
 }

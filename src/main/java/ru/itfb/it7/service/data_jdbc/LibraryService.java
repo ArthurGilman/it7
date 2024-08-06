@@ -18,22 +18,21 @@ import ru.itfb.it7.projections.ReaderProjection;
 import ru.itfb.it7.repositories.JDBC.LibraryJDBCTemplateRepository;
 import ru.itfb.it7.repositories.dataJDBC.BookLendingRepository;
 import ru.itfb.it7.repositories.dataJDBC.BookRepository;
+import ru.itfb.it7.repositories.dataJDBC.RackRepository;
 import ru.itfb.it7.repositories.dataJDBC.ReaderRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class LibraryJDBCService {
+public class LibraryService {
 
     private final ReaderRepository readerRepository;
     private final BookRepository bookRepository;
     private final BookLendingRepository bookLendingRepository;
+    private final RackRepository rackRepository;
     private final LibraryJDBCTemplateRepository templateRepository;
     private final TransactionTemplate transactionTemplate;
 
@@ -75,8 +74,8 @@ public class LibraryJDBCService {
         return readerRepository.save(r);
     }
     // TODO: java docs
-    public Reader createNewReaderTicket(ReaderUpdateRequest request) {
-        Reader r = readerRepository.findById(request.getId()).orElseThrow(() -> new ReaderNotExist("Невозможно обновить билет, так как читателя не существует"));
+    public Reader createNewReaderTicketByReaderId(Long id) {
+        Reader r = readerRepository.findById(id).orElseThrow(() -> new ReaderNotExist("Невозможно создать билет, так как читателя не существует"));
         ReaderTicket rt = ReaderTicket.builder()
                 .issueDate(LocalDate.now())
                 .expiryDate(LocalDate.now().plusDays(365))
@@ -87,10 +86,10 @@ public class LibraryJDBCService {
     }
 
     // TODO: java docs
-    public Reader blockReaderTicket (ReaderUpdateRequest request) {
-        Reader r = readerRepository.findById(request.getId()).orElseThrow(() -> new ReaderNotExist("Невозможно заблокировать билет, так как читателя не существует"));
+    public Reader blockReaderTicketByReaderId (Long id) {
+        Reader r = readerRepository.findById(id).orElseThrow(() -> new ReaderNotExist("Невозможно заблокировать билет, так как читателя не существует"));
         r.getReaderTicket().setStatus("block");
-        return r;
+        return readerRepository.save(r);
     }
 
     /**
@@ -184,21 +183,42 @@ public class LibraryJDBCService {
      */
     public Iterable<Book> createBook(List<BookCreateRequest> request) {
         List<Book> allBooks = new ArrayList<>();
-        for (BookCreateRequest req : request) {
-            Book b = Book.builder()
-                    .title(req.getTitle())
-                    .isbn(req.getIsbn())
-                    .categories(req.getCategories())
-                    .authors(req.getAuthors())
-                    .build();
-            allBooks.add(b);
-        }
-        return bookRepository.saveAll(allBooks);
+        transactionTemplate.execute(status -> {
+            try {
+                for (BookCreateRequest req : request) {
+                    Book b = Book.builder()
+                            .title(req.getTitle())
+                            .isbn(req.getIsbn())
+                            .categories(req.getCategories())
+                            .authors(req.getAuthors())
+                            .build();
+                    allBooks.add(b);
+                }
+                return bookRepository.saveAll(allBooks);
+            } catch (Exception ex) {
+                status.setRollbackOnly();
+                throw ex;
+            }
+        });
+        return allBooks;
     }
 
     /**
      * TODO: заведение новых стеллажей
      */
+    public List<Rack> createRacks(List<RackCreateRequest> request) {
+        List<Rack> racks = new ArrayList<>();
+        for (RackCreateRequest req : request) {
+            Rack rack = Rack.builder()
+                    .location(req.getLocation())
+                    .shelves(new HashSet<>())
+                    .build();
+            racks.add(rack);
+        }
+        rackRepository.saveAll(racks);
+        return racks;
+    }
+
 
     /**
      * создание нового экземляра книги
@@ -223,7 +243,7 @@ public class LibraryJDBCService {
         Set<BookCopy> copies = b.getBookCopies();
         for (BookCopyCreateRequest req : request) {
             if (!req.getBookId().equals(b.getId())) {
-                throw new UnsupportedOperationException("Запрещенено пакетное создание экземялров для разных книг")
+                throw new UnsupportedOperationException("Запрещенено пакетное создание экземялров для разных книг");
             }
             BookCopy copy = BookCopy.builder()
                     .shelfId(req.getShelfId())
