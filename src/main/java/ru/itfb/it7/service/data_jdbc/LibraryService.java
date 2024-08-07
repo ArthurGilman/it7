@@ -9,7 +9,6 @@ import ru.itfb.it7.dto.request.ReaderRequest;
 import ru.itfb.it7.dto.request.create.*;
 import ru.itfb.it7.dto.request.update.BookCopyUpdateRequest;
 import ru.itfb.it7.dto.request.update.BookLendingUpdateRequest;
-import ru.itfb.it7.dto.request.update.ReaderUpdateRequest;
 import ru.itfb.it7.exception.BookAlreadyWrittenOff;
 import ru.itfb.it7.exception.BookNotExist;
 import ru.itfb.it7.exception.ReaderNotExist;
@@ -25,7 +24,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class LibraryService {
 
@@ -43,6 +41,7 @@ public class LibraryService {
      *
      * @return Проекция читателя
      */
+    @Transactional
     public ReaderProjection findReaderWithTicket(ReaderRequest request) {
         return readerRepository.findReaderByFirstNameAndLastNameAndBirthDate(
                 request.getFirstName(),
@@ -57,7 +56,7 @@ public class LibraryService {
      * @param request
      * @return
      */
-
+    @Transactional
     public Reader createReaderWithTicket(ReaderCreateRequest request) {
         ReaderTicket rt = ReaderTicket.builder()
                 .issueDate(LocalDate.now())
@@ -74,6 +73,7 @@ public class LibraryService {
         return readerRepository.save(r);
     }
     // TODO: java docs
+    @Transactional
     public Reader createNewReaderTicketByReaderId(Long id) {
         Reader r = readerRepository.findById(id).orElseThrow(() -> new ReaderNotExist("Невозможно создать билет, так как читателя не существует"));
         ReaderTicket rt = ReaderTicket.builder()
@@ -86,6 +86,7 @@ public class LibraryService {
     }
 
     // TODO: java docs
+    @Transactional
     public Reader blockReaderTicketByReaderId (Long id) {
         Reader r = readerRepository.findById(id).orElseThrow(() -> new ReaderNotExist("Невозможно заблокировать билет, так как читателя не существует"));
         r.getReaderTicket().setStatus("block");
@@ -97,6 +98,7 @@ public class LibraryService {
      * @param request
      * @return
      */
+    @Transactional
     public BookLending createBookLending(BookLendingCreateRequest request) {
         bookRepository.findBookByBookLendingCopyId(request.getCopyId()).orElseThrow(() -> new BookNotExist("Нет такой книги"));
 
@@ -122,6 +124,7 @@ public class LibraryService {
      * @param request
      * @return
      */
+    @Transactional
     public BookLending updateBookLending(BookLendingUpdateRequest request) {
         bookRepository.findBookByBookLendingCopyId(request.getCopyId()).orElseThrow(() -> new BookNotExist("Нет такой книги"));
         BookLending bl = BookLending.builder()
@@ -135,11 +138,13 @@ public class LibraryService {
     }
 
     /**
+     * TODO : transactionTemplate
      * Фиксация утери книги
      * @param request
      * @return
      * @throws EmptyResultDataAccessException
      */
+    @Transactional
     public BookDisposal recordLossOfBook(BookDisposalRequest request) throws EmptyResultDataAccessException {
         List<BookDisposal> bookDisposalList = templateRepository.findAllBookDisposalByCopyId(request.getCopyId());
         if (!bookDisposalList.isEmpty()) {
@@ -182,9 +187,9 @@ public class LibraryService {
      * Заведение новых книг
      */
     public Iterable<Book> createBook(List<BookCreateRequest> request) {
-        List<Book> allBooks = new ArrayList<>();
-        transactionTemplate.execute(status -> {
+       return transactionTemplate.execute(status -> {
             try {
+                List<Book> allBooks = new ArrayList<>();
                 for (BookCreateRequest req : request) {
                     Book b = Book.builder()
                             .title(req.getTitle())
@@ -200,12 +205,13 @@ public class LibraryService {
                 throw ex;
             }
         });
-        return allBooks;
+//        return allBooks;
     }
 
     /**
      * TODO: заведение новых стеллажей
      */
+    @Transactional
     public List<Rack> createRacks(List<RackCreateRequest> request) {
         List<Rack> racks = new ArrayList<>();
         for (RackCreateRequest req : request) {
@@ -224,20 +230,22 @@ public class LibraryService {
      * создание нового экземляра книги
      * @return
      */
-    public Book createBookCopy(BookCopyCreateRequest request) throws BookNotExist {
+    @Transactional
+    public BookCopy createBookCopy(BookCopyCreateRequest request) throws BookNotExist {
         Book b = bookRepository.findById(request.getBookId()).orElseThrow(() -> new BookNotExist("Такой книги не существует"));
         BookCopy copy = BookCopy.builder()
                 .shelfId(request.getShelfId())
                 .status(request.getStatus())
                 .build();
         b.getBookCopies().add(copy);
-        return bookRepository.save(b);
+        bookRepository.save(b);
+        return copy;
     }
     /**
      * TODO: пакетное создание нескольких экземляров одной и той же книги
      */
-
-    public Book createBookCopies(List<BookCopyCreateRequest> request) {
+    @Transactional
+    public Set<BookCopy> createBookCopies(List<BookCopyCreateRequest> request) {
         Book b = bookRepository.findById(request.get(0).getBookId())
                 .orElseThrow(() -> new BookNotExist("Такой книги не существует"));
         Set<BookCopy> copies = b.getBookCopies();
@@ -251,13 +259,15 @@ public class LibraryService {
                     .build();
             copies.add(copy);
         }
-        return bookRepository.save(b);
+        bookRepository.save(b);
+        return copies;
     }
 
 
     /**
      * TODO: обновление экземляра книги
      */
+    @Transactional
     public BookCopy updateBookCopy(BookCopyUpdateRequest request) {
         Book b = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new BookNotExist("Книги, к которой относится экземпляр книги нет, в базе данных"));

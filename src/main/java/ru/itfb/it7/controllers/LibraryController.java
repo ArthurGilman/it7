@@ -5,14 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itfb.it7.dto.request.create.BookLendingCreateRequest;
-import ru.itfb.it7.dto.request.create.ReaderCreateRequest;
-import ru.itfb.it7.dto.request.create.ReaderTicketCreateRequest;
+import ru.itfb.it7.dto.request.ReaderRequest;
+import ru.itfb.it7.dto.request.create.*;
+import ru.itfb.it7.dto.request.update.BookCopyUpdateRequest;
 import ru.itfb.it7.dto.request.update.BookLendingUpdateRequest;
-import ru.itfb.it7.dto.request.update.ReaderUpdateRequest;
-import ru.itfb.it7.model.BookLending;
-import ru.itfb.it7.model.Reader;
+import ru.itfb.it7.model.*;
+import ru.itfb.it7.projections.ReaderProjection;
 import ru.itfb.it7.service.data_jdbc.LibraryService;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +23,11 @@ import ru.itfb.it7.service.data_jdbc.LibraryService;
 public class LibraryController {
 
     private final LibraryService service;
+
+    public ResponseEntity<ReaderProjection> findReader(ReaderRequest request) {
+        ReaderProjection r = service.findReaderWithTicket(request);
+        return ResponseEntity.ok(r);
+    }
 
     @PostMapping("/reader/create")
     public ResponseEntity<Reader> createReaderWtihTicket(@RequestBody ReaderCreateRequest request) {
@@ -57,5 +64,46 @@ public class LibraryController {
         return ResponseEntity.ok(bl);
     }
 
+    @PostMapping("book-disposal/create")
+    public ResponseEntity<BookDisposal> createBookDisposal(@RequestBody BookDisposalRequest request) {
+        log.info("create book disposal");
+        BookDisposal bd = service.bookWriteOff(request);
+        return ResponseEntity.ok(bd);
+    }
+
+    @PostMapping("book/create")
+    public ResponseEntity<Iterable<Book>> createBook(@RequestBody List<BookCreateRequest> request) {
+        log.info("create books");
+        Iterable<Book> books = service.createBook(request);
+        return ResponseEntity.ok(books);
+    }
+
+    @PostMapping("rack/create")
+    public ResponseEntity<List<Rack>> createRacks(@RequestBody List<RackCreateRequest> request) {
+        log.info("create racks");
+        List<Rack> racks = service.createRacks(request);
+        return ResponseEntity.ok(racks);
+    }
+
+    @PostMapping("book-copy/create")
+    public ResponseEntity<BookCopy> createBookCopy(@RequestBody BookCopyCreateRequest request) {
+        log.info("create book copy");
+        BookCopy bookCopy = service.createBookCopy(request);
+        return ResponseEntity.ok(bookCopy);
+    }
+
+    @PostMapping("book-copy/create-all")
+    public ResponseEntity<Set<BookCopy>> createBookCopies(@RequestBody List<BookCopyCreateRequest> request) {
+        log.info("create book copies");
+        Set<BookCopy> copies = service.createBookCopies(request);
+        return ResponseEntity.ok(copies);
+    }
+
+    @PostMapping("book-copy/update")
+    public ResponseEntity<BookCopy> updateBookCopy(@RequestBody BookCopyUpdateRequest request) {
+        log.info("update book copy");
+        BookCopy bookCopy = service.updateBookCopy(request);
+        return ResponseEntity.ok(bookCopy);
+    }
 
 }
